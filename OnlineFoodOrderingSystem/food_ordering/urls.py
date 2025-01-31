@@ -10,6 +10,8 @@ urlpatterns = [
     path('order/<int:food_id>/', views.order_food, name='order_food'),
     path('order-history/', views.order_history, name='order_history'),
     path('manage-food/', views.manage_food, name='manage_food'),
+    path('order/<int:food_id>/', views.order_food, name='order_food'),
+
 
 
 

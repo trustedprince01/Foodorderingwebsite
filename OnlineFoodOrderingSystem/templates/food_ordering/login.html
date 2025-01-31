@@ -3,19 +3,24 @@
 {% block title %}Login{% endblock %}
 
 {% block content %}
-{% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-info">
-            {{ message }}
-        </div>
-    {% endfor %}
-{% endif %}
+<div class="d-flex justify-content-center">
+    <div class="card p-4 shadow-sm" style="max-width: 400px; width: 100%;">
+        <h2 class="text-center">Login</h2>
 
-<h2>Login</h2>
-<form method="post" class="card p-4 shadow-sm">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-success w-100">Submit</button>
-</form>
-<p>Don't have an account? <a href="{% url 'register' %}">Register</a></p>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-info text-center">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-success w-100 mt-2">Login</button>
+        </form>
+        <p class="text-center mt-3">Don't have an account? <a href="{% url 'register' %}">Register</a></p>
+    </div>
+</div>
 {% endblock %}

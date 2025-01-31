@@ -26,8 +26,13 @@ def order_food(request, food_id):
         quantity = int(request.POST.get("quantity", 1))
         Order.objects.create(user=request.user, food=food, quantity=quantity)
         return redirect("menu")  # Redirect to menu after ordering
+    
+    if request.method == "POST":
+        quantity = int(request.POST.get("quantity", 1))
+        Order.objects.create(user=request.user, food=food, quantity=quantity)
+        return redirect("order_history")  # Redirect to order history after confirming
 
-    return render(request, "food_ordering/order.html", {"food": food})
+    return render(request, "food_ordering/checkout.html", {"food": food})
 
 
 def user_login(request):

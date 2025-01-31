@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center">
+    <div class="card p-4 shadow-sm" style="max-width: 400px; width: 100%;">
+        <h2 class="text-center">Checkout</h2>
+        <p class="text-center"><strong>{{ food.name }}</strong></p>
+        <p class="text-center">Price per item: ${{ food.price }}</p>
+        
+        <form method="post">
+            {% csrf_token %}
+            <label for="quantity" class="form-label">Quantity:</label>
+            <input type="number" name="quantity" value="1" min="1" class="form-control" required>
+            <p class="text-center mt-2"><strong>Total: $<span id="total-price">{{ food.price }}</span></strong></p>
+            <button type="submit" class="btn btn-primary w-100 mt-3">Confirm Order</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Update total price when quantity changes
+    document.querySelector('input[name="quantity"]').addEventListener('input', function() {
+        let price = {{ food.price }};
+        let quantity = this.value;
+        let total = price * quantity;
+        document.getElementById("total-price").innerText = total.toFixed(2);
+    });
+</script>
+{% endblock %}
