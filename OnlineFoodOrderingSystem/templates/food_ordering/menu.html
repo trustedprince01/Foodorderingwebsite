@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Menu{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% if user.is_staff %}
+    <div class="text-end mb-3">
+        <a href="/admin/food_ordering/food/add/" class="btn btn-success">+ Add Food</a>
+    </div>
+    {% endif %}
+
+    <h2 class="text-center mb-4">Our Menu</h2>
+    
+    <div class="row">
+        {% for food in foods %}
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm">
+                {% if food.image %}
+                    <img src="{{ food.image.url }}" class="card-img-top" alt="{{ food.name }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/150" class="card-img-top" alt="Default Image">
+                {% endif %}
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ food.name }}</h5>
+                    <p class="card-text">{{ food.description }}</p>
+                    <p class="fw-bold">${{ food.price }}</p>
+                    <a href="{% url 'order_food' food.id %}" class="btn btn-primary w-100">Order Now</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-center">No food items available.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
