@@ -116,6 +116,17 @@ AUTH_PASSWORD_VALIDATORS = [
 PAYSTACK_PUBLIC_KEY = "pk_test_f328575f8f9f690f5ed43786a9c5c456c277719b"
 PAYSTACK_SECRET_KEY = "sk_test_a380dda6a29099c572c9a3c5034425240036c5ee"
 
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 465
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = "chibuzorprince68@gmail.com"  # Replace with your Gmail
+EMAIL_HOST_PASSWORD = "datz igst yqsp dcby"  # Use Gmail App Password
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 

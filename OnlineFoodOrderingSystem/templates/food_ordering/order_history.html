@@ -24,15 +24,21 @@
             <td>
                 <span class="badge 
                 {% if order.status == 'Pending' %}bg-warning
+                {% elif order.status == 'In Progress' %}bg-primary
                 {% elif order.status == 'Completed' %}bg-success
-                {% else %}bg-danger{% endif %}">
+                {% else %}bg-secondary{% endif %}">
                 {{ order.status }}
             </span>
             </td>
         </tr>
+        {% empty %}
+        <tr>
+            <td colspan="5" class="text-center">No orders found.</td>
+        </tr>
         {% endfor %}
     </tbody>
 </table>
+{% endblock %}
 
 {% if orders %}
     <p class="text-center">Total Orders: {{ orders|length }}</p>
@@ -40,4 +46,4 @@
 
     <p>You have no past orders.</p>
 {% endif %}
-{% endblock %}
+

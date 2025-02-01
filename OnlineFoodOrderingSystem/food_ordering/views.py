@@ -9,6 +9,9 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render
 from django.conf import settings
+from django.core.mail import send_mail
+from .models import Order
+
 
 @staff_member_required
 def manage_food(request):
@@ -26,12 +29,15 @@ def order_food(request, food_id):
 
     if request.method == "POST":
         quantity = int(request.POST.get("quantity", 1))
-        Order.objects.create(user=request.user, food=food, quantity=quantity)
-        return redirect("order_history")  # Redirect after confirming order
+        order = Order.objects.create(user=request.user, food=food, quantity=quantity)  # ✅ Order is saved
+
+        print("✅ Order saved:", order)  # Debug message to check if order is saved
+
+        return redirect("order_history")
 
     return render(request, "food_ordering/checkout.html", {
         "food": food,
-        "PAYSTACK_PUBLIC_KEY": settings.PAYSTACK_PUBLIC_KEY  # Send key to template
+        "PAYSTACK_PUBLIC_KEY": settings.PAYSTACK_PUBLIC_KEY
     })
 
 
@@ -73,3 +79,17 @@ def register(request):
 def user_logout(request):
     logout(request)
     return redirect("home")
+
+def send_order_email(user, order):
+    subject = "Order Confirmation"
+    message = f"""
+    Hello {user.username},
+
+    Your order for {order.food.name} (x{order.quantity}) has been received.
+    Total: ${order.total_price}
+
+    Thank you for ordering!
+    """
+    recipient_list = [user.email]
+
+    send_mail(subject, message, settings.EMAIL_HOST_USER, recipient_list)
