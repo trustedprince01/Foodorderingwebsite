@@ -3,15 +3,15 @@
 {% block title %}Order History{% endblock %}
 
 {% block content %}
-<h2>Your Order History</h2>
-{% if orders %}
-<table class="table table-striped table-hover shadow-sm">
+<h2 class="text-center">Your Order History</h2>
+<table class="table table-hover shadow-sm">
     <thead class="table-dark">
         <tr>
             <th>Food Item</th>
             <th>Quantity</th>
             <th>Total Price</th>
             <th>Date</th>
+            <th>Status</th>
         </tr>
     </thead>
     <tbody>
@@ -19,14 +19,25 @@
         <tr>
             <td>{{ order.food.name }}</td>
             <td>{{ order.quantity }}</td>
-            <td>${{ order.total_price }}</td>
+            <td class="fw-bold text-danger">${{ order.total_price }}</td>
             <td>{{ order.ordered_at|date:"F d, Y H:i" }}</td>
+            <td>
+                <span class="badge 
+                {% if order.status == 'Pending' %}bg-warning
+                {% elif order.status == 'Completed' %}bg-success
+                {% else %}bg-danger{% endif %}">
+                {{ order.status }}
+            </span>
+            </td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
 
+{% if orders %}
+    <p class="text-center">Total Orders: {{ orders|length }}</p>
 {% else %}
+
     <p>You have no past orders.</p>
 {% endif %}
 {% endblock %}

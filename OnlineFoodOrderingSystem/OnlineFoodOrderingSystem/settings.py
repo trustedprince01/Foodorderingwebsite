@@ -113,6 +113,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+PAYSTACK_PUBLIC_KEY = "pk_test_f328575f8f9f690f5ed43786a9c5c456c277719b"
+PAYSTACK_SECRET_KEY = "sk_test_a380dda6a29099c572c9a3c5034425240036c5ee"
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/

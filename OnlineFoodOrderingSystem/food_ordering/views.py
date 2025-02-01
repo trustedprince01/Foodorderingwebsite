@@ -7,6 +7,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from .forms import RegisterForm
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
+from django.shortcuts import render
+from django.conf import settings
 
 @staff_member_required
 def manage_food(request):
@@ -25,14 +27,12 @@ def order_food(request, food_id):
     if request.method == "POST":
         quantity = int(request.POST.get("quantity", 1))
         Order.objects.create(user=request.user, food=food, quantity=quantity)
-        return redirect("menu")  # Redirect to menu after ordering
-    
-    if request.method == "POST":
-        quantity = int(request.POST.get("quantity", 1))
-        Order.objects.create(user=request.user, food=food, quantity=quantity)
-        return redirect("order_history")  # Redirect to order history after confirming
+        return redirect("order_history")  # Redirect after confirming order
 
-    return render(request, "food_ordering/checkout.html", {"food": food})
+    return render(request, "food_ordering/checkout.html", {
+        "food": food,
+        "PAYSTACK_PUBLIC_KEY": settings.PAYSTACK_PUBLIC_KEY  # Send key to template
+    })
 
 
 def user_login(request):
@@ -41,16 +41,18 @@ def user_login(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            messages.success(request, "Login successful! You can now place an order.")
             return redirect("home")
     else:
         form = AuthenticationForm()
-        if request.GET.get("next"):
-            messages.info(request, "You need to log in to place an order.")
     return render(request, "food_ordering/login.html", {"form": form})
+
 
 def home(request):
     return render(request, 'food_ordering/home.html')
+
+def payment_success(request):
+    reference = request.GET.get("reference", "")
+    return render(request, "food_ordering/payment_success.html", {"reference": reference})
 
 
 def menu(request):
@@ -67,17 +69,6 @@ def register(request):
     else:
         form = RegisterForm()
     return render(request, "food_ordering/register.html", {"form": form})
-
-def user_login(request):
-    if request.method == "POST":
-        form = AuthenticationForm(data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect("home")
-    else:
-        form = AuthenticationForm()
-    return render(request, "food_ordering/login.html", {"form": form})
 
 def user_logout(request):
     logout(request)

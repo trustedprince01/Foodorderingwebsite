@@ -9,22 +9,42 @@
         <p class="text-center"><strong>{{ food.name }}</strong></p>
         <p class="text-center">Price per item: ${{ food.price }}</p>
         
-        <form method="post">
+        <form id="paymentForm">
             {% csrf_token %}
             <label for="quantity" class="form-label">Quantity:</label>
-            <input type="number" name="quantity" value="1" min="1" class="form-control" required>
+            <input type="number" id="quantity" name="quantity" value="1" min="1" class="form-control" required>
             <p class="text-center mt-2"><strong>Total: $<span id="total-price">{{ food.price }}</span></strong></p>
-            <button type="submit" class="btn btn-primary w-100 mt-3">Confirm Order</button>
+            <button type="button" onclick="payWithPaystack()" class="btn btn-primary w-100 mt-3">Pay Now</button>
         </form>
     </div>
 </div>
 
+<script src="https://js.paystack.co/v1/inline.js"></script>
 <script>
-    // Update total price when quantity changes
-    document.querySelector('input[name="quantity"]').addEventListener('input', function() {
+    function payWithPaystack() {
         let price = {{ food.price }};
-        let quantity = this.value;
+        let quantity = document.getElementById("quantity").value;
         let total = price * quantity;
+
+        let handler = PaystackPop.setup({
+            key: "{{ PAYSTACK_PUBLIC_KEY }}",
+            email: "{{ request.user.email }}",
+            amount: total * 100,  // Convert to kobo
+            currency: "NGN",
+            callback: function(response) {
+                window.location.href = "{% url 'payment_success' %}?reference=" + response.reference;
+            },
+            onClose: function() {
+                alert("Transaction was not completed.");
+            }
+        });
+        handler.openIframe();
+    }
+
+    // Update total price when quantity changes
+    document.getElementById("quantity").addEventListener('input', function() {
+        let price = {{ food.price }};
+        let total = price * this.value;
         document.getElementById("total-price").innerText = total.toFixed(2);
     });
 </script>
