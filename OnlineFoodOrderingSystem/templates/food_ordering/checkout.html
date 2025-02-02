@@ -24,13 +24,19 @@
     function payWithPaystack() {
         let price = {{ food.price }};
         let quantity = document.getElementById("quantity").value;
-        let total = price * quantity;
+        let total = price * quantity * 100;  // Convert to kobo
+
+        if (!window.PaystackPop) {
+            alert("Paystack failed to load. Check your internet connection.");
+            return;
+        }
 
         let handler = PaystackPop.setup({
             key: "{{ PAYSTACK_PUBLIC_KEY }}",
             email: "{{ request.user.email }}",
-            amount: total * 100,  // Convert to kobo
+            amount: total,
             currency: "NGN",
+            ref: "TXN_" + Math.floor((Math.random() * 1000000000) + 1), // Generate a random transaction ID
             callback: function(response) {
                 window.location.href = "{% url 'payment_success' %}?reference=" + response.reference;
             },
@@ -38,8 +44,16 @@
                 alert("Transaction was not completed.");
             }
         });
+
         handler.openIframe();
     }
+
+    // Ensure Paystack script is loaded
+    document.addEventListener("DOMContentLoaded", function () {
+        if (!window.PaystackPop) {
+            console.error("Paystack script failed to load.");
+        }
+    });
 
     // Update total price when quantity changes
     document.getElementById("quantity").addEventListener('input', function() {
@@ -48,4 +62,5 @@
         document.getElementById("total-price").innerText = total.toFixed(2);
     });
 </script>
+
 {% endblock %}
