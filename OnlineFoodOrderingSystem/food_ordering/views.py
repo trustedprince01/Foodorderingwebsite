@@ -25,6 +25,7 @@ def order_history(request):
     print("📝 Orders found for user:", orders)  # Debug message
     return render(request, 'food_ordering/order_history.html', {'orders': orders})
 
+
 @login_required
 def order_food(request, food_id):
     food = get_object_or_404(Food, id=food_id)
